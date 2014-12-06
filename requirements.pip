@@ -1,5 +1,6 @@
 PIL==1.1.7
 redis==2.10.3
+https://pypi.python.org/packages/source/l/lxml/lxml-3.4.1.tar.gz#md5=b7696a3f33d5610b215a343216ab5624
 Django==1.6.2
 django-mptt==0.6.1
 django-celery==3.1.16

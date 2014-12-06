@@ -3,3 +3,4 @@
 .idea
 db.*
 static/media
+*.pyc

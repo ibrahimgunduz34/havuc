@@ -19,10 +19,13 @@ class Product(models.Model):
 	category = models.ForeignKey(Category)
 	small_description = models.CharField(max_length=255, null=True, blank=True)
 	long_description = models.TextField(null=True, blank=True)
-	last_price = models.DecimalField(max_digits=7, decimal_places=2)
-	last_currency = models.CharField(max_length=3)
+	last_price = models.DecimalField(max_digits=7, decimal_places=2,
+									 null=True, blank=True)
+	last_currency = models.CharField(max_length=3, null=True, blank=True)
 	image = models.ImageField(upload_to='product/%Y/%m')
 	is_active = models.BooleanField(default=True)
+	last_check_date = models.DateTimeField(null=True, blank=True)
+	last_change_date = models.DateTimeField(null=True, blank=True)
 
 	def __unicode__(self):
 		return self.name
@@ -35,6 +38,7 @@ class Product(models.Model):
 class Resource(models.Model):
 	name = models.CharField(max_length=50)
 	icon = models.ImageField(upload_to='resources')
+	resource_name = models.CharField(max_length=50)
 	is_active = models.BooleanField(default=True)
 
 	def admin_image(self):
@@ -49,6 +53,7 @@ class ProductResource(models.Model):
 	product = models.ForeignKey(Product)
 	resource = models.ForeignKey(Resource)
 	url = models.URLField()
+	is_active = models.BooleanField(default=True)
 
 
 class ProductPrice(models.Model):
