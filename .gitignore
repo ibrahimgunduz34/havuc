@@ -1,0 +1,5 @@
+*.swp
+*.swo
+.idea
+db.*
+static/media
