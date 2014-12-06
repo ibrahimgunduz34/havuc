@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from catalog.models import Product, Resource, ProductResource, ProductPrice, \
+from catalog.models import Product, Resource, ProductResource, \
 						   Category
 
 from mptt.admin import MPTTModelAdmin
