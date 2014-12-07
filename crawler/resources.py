@@ -1,4 +1,5 @@
 from crawler.exceptions import ParseError
+from decimal import Decimal
 from lxml import html as parser
 from urlparse import urlparse
 
@@ -66,10 +67,14 @@ class VatanBilgisayarResource(BaseResource):
 	def parse_price(self):
 		xpath = '//*[@id="ctl00_u14_ascUrunDetay_dtUrunD' \
 				'etay_ctl00_lblSatisFiyat"]'
-		self.price = self.get_node_value(xpath)
+		price = self.get_node_value(xpath).replace('.', '')
+		try:
+			self.price = Decimal(price)
+		except ValueError, TypeError:
+			self.price = None
 
 	def parse_currency(self):
-		self.currency = 'TRL'
+		self.currency = 'TL'
 
 	def parse_image_url(self):
 		xpath = '//*[@class="slider"]/li[1]/a/img';
@@ -77,3 +82,77 @@ class VatanBilgisayarResource(BaseResource):
 								   self.get_attribute_value(xpath, 'src'))
 
 
+class BimeksResource(BaseResource):
+	def parse_price(self):
+		thousand_xpath = '//*[@id="ctl00_cphcontent_detay_urun1_FormView_' \
+			'Urun_Detay_PanelPrices"]/div[1]/span'
+		decimal_xpath = '//*[@id="ctl00_cphcontent_detay_urun1_FormView_' \
+			'Urun_Detay_PanelPrices"]/div[1]/span/small'
+		thousand_value = self.get_node_value(thousand_xpath)
+		decimal_value = self.get_node_value(decimal_xpath).split(' ')[0][1:]
+		price = '%s.%s' % (thousand_value, decimal_value)
+		try:
+			self.price = Decimal(price)
+		except ValueError, TypeError:
+			self.price = None
+
+	def parse_currency(self):
+		xpath = '//*[@id="ctl00_cphcontent_detay_urun1_FormView_' \
+			'Urun_Detay_PanelPrices"]/div[1]/span/small'
+		self.currency = self.get_node_value(xpath).split(' ')[1]
+
+	def parse_image_url(self):
+		xpath = '//*[@id="thumbs"]/ul/li[1]/a'
+		self.image_url = self.get_attribute_value(xpath, 'href')
+
+
+class HepsiBuradaResource(BaseResource):
+	def parse_price(self):
+		xpath = '//*[@id="ctl00_ContentPlaceHolder1_ProductControl1_' \
+			'MainControl1_ProductMain1_lblPriceFirst"]'
+		value = self.get_node_value(xpath).split(' ')
+		price = value[0].replace('.', '').replace(',', '.')
+		currency = value[1]
+		try:
+			self.price = Decimal(price)
+		except ValueError, TypeError:
+			self.price = None
+		self.currency = currency
+
+	def parse_currency(self):
+		pass
+
+	def parse_image_url(self):
+		xpath = '//*[@id="ctl00_ContentPlaceHolder1_ProductControl1_' \
+			'MainControl1_TabControl1_TabImage1_rptBigImages_ctl00_imgBigImage"]'
+		self.image_url = self.get_attribute_value(xpath, 'src')
+
+
+class HizliAlResource(BaseResource):
+	def parse_price(self):
+		xpath = '//*[@id="content_ProductPrices1_divFiyat"]/span'
+		values = self.get_items(xpath)
+		if len(values) > 1 and 'ndirim' in values[1].text.encode('utf8'):
+			xpath = '//*[@id="content_ProductPrices1_divFiyat"]/div[2]'
+		else:
+			xpath = '//*[@id="content_ProductPrices1_divFiyat"]/div'
+
+		price = self.get_node_value(xpath).strip()
+		price = price.replace('.', '').replace(',', '.')
+		try:
+			self.price = Decimal(price)
+		except ValueError, TypeError:
+			self.price = None
+
+	def parse_currency(self):
+		xpath = '//*[@id="content_ProductPrices1_divFiyat"]/span'
+		values = self.get_items(xpath)
+		if len(values) > 1 and 'ndirim' in values[1].text.encode('utf8'):
+			xpath = '//*[@id="content_ProductPrices1_divFiyat"]/div[2]/span'
+		else:
+			xpath = '//*[@id="content_ProductPrices1_divFiyat"]/div/span'
+		self.currency = self.get_node_value(xpath).strip()
+
+	def parse_image_url(self):
+		xpath = '//*[@id="imagezoom_thum"]/div/ul/li[1]/a'
+		self.image_url = self.get_attribute_value(xpath, 'href')

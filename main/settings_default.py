@@ -1,3 +1,8 @@
+import os
+import datetime
+
+import djcelery
+
 """
 Django settings for cmp project.
 
@@ -9,11 +14,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # preparing Celery
-import djcelery
+
 djcelery.setup_loader()
 
 
@@ -80,13 +85,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'tr-TR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'GMT'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -113,4 +118,11 @@ REDIS_PORT = 6379
 CELERY_ROUTES = {
     'crawler.tasks.crawler_job': {'queue': 'scheduled_tasks'},
     'crawler.tasks.crawle_resource': {'queue': 'crawler'},
+}
+
+CELERYBEAT_SCHEDULE = {
+    'crawler_job': {
+        'task': 'crawler.tasks.crawler_job',
+        'schedule': datetime.timedelta(minutes=30)
+    }
 }

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from catalog.models import Product, Resource, ProductResource, \
-						   Category
+						   Category, ProductPrice
 
 from mptt.admin import MPTTModelAdmin
 
@@ -19,9 +19,13 @@ class ProductResourceAdmin(admin.TabularInline):
 	model = ProductResource
 
 
+class ProductPriceAdmin(admin.TabularInline):
+	model = ProductPrice
+
+
 class ProductAdmin(admin.ModelAdmin):
-	inlines = [ProductResourceAdmin,]
-	list_display = ['name', 'category']
+	inlines = [ProductResourceAdmin, ProductPriceAdmin]
+	list_display = ['name', 'category', 'last_price', 'last_currency', 'last_check_date', 'last_change_date']
 	readonly_fields = ['admin_detail_image']
 
 

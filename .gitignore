@@ -4,3 +4,4 @@
 db.*
 static/media
 *.pyc
+celerybeat-schedule

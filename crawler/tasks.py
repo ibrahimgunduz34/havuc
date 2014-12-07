@@ -34,9 +34,10 @@ def crawle_resource(product_resource):
 	product.last_check_date = datetime.now()
 
 	try:
-		latest_price = ProductPrice.objects.latest('id')
-		if latest_price.price == product.last_price and \
-				latest_price.currency == product.last_price:
+		latest_price = ProductPrice.objects.filter(
+			product=product, resource=resource).latest('id')
+		if latest_price.price == web_resource.get_price() and \
+				latest_price.currency == web_resource.get_currency():
 			product.save()
 			return False
 	except ProductPrice.DoesNotExist:
@@ -47,8 +48,10 @@ def crawle_resource(product_resource):
 		price=web_resource.get_price(),
 		currency=web_resource.get_currency())
 
-	product.last_price = product_price.price
-	product.last_currency = product_price.currency
+	min_price = ProductPrice.objects.filter(product=product).order_by('price')[0]
+
+	product.last_price = min_price.price
+	product.last_currency = min_price.currency
 	product.last_change_date = datetime.now()
 	product.save()
 
