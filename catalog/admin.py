@@ -21,6 +21,7 @@ class ProductResourceAdmin(admin.TabularInline):
 
 class ProductPriceAdmin(admin.TabularInline):
 	model = ProductPrice
+	readonly_fields = ['creation_date']
 
 
 class ProductAdmin(admin.ModelAdmin):
