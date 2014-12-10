@@ -5,3 +5,4 @@ db.*
 static/media
 *.pyc
 celerybeat-schedule
+settings_local.py
