@@ -21,6 +21,11 @@ $ cd havuc-env
 $ git clone git@github.com:ibrahimgunduz34/havuc.git
 ```
 
+. Aşağıdaki komutu çalıştırarak gerekli linux paketlerinin kurulumunu gerçekleştirin.
+```shell
+sudo apt-get install python-dev libffi-dev libxml2-dev libxslt-dev python-virtualenv redis-server python-mysqldb libmysqlclient-dev
+```
+
 . Sanal ortamı aktif duruma getirin ve uygulama için gerekli paketlerin kurulumunu gerceklestirin.
 
 ```shell
